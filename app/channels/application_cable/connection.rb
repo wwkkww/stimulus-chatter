@@ -4,7 +4,7 @@ module ApplicationCable
 
     # restrict web socket communication to user session
     def connect
-      self.session_id = request.session_id
+      self.session_id = request.session.id
     end
   end
 end

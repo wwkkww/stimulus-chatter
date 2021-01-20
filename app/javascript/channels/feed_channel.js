@@ -17,7 +17,7 @@ consumer.subscriptions.create("FeedChannel", {
 
     // if data is cable ready, perform job for data 
     if (data.cableReady) {
-      CableReady.perform(data.operation)
+      CableReady.perform(data.operations)
     }
   }
 });
