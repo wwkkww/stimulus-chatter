@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PostsReflex < ApplicationReflex
+  include CableReady::Broadcaster
+  include ActionView::RecordIdentifier
   # Add Reflex methods in this file.
   #
   # All Reflex instances include CableReady::Broadcaster and expose the following properties:
@@ -32,4 +34,30 @@ class PostsReflex < ApplicationReflex
   #
   # Learn more at: https://docs.stimulusreflex.com/reflexes#reflex-classes
 
+  def repost
+    @post = Post.find(element.dataset[:id])
+    @post.increment! :repost_count
+
+    cable_ready["feed"].text_content(
+      selector: "##{dom_id(@post, "reposts")}", # eg: id="reposts_post_2"
+      text: @post.repost_count
+    )
+
+    # emit broadcast with cable ready
+    cable_ready.broadcast
+  end
+
+  def like
+    @post = Post.find(element.dataset[:id])
+    @post.increment! :likes_count
+
+    cable_ready["feed"].text_content(
+      selector: "##{dom_id(@post, "likes")}", # eg: id="reposts_post_2"
+      text: @post.likes_count
+    )
+
+    # emit broadcast with cable ready
+    cable_ready.broadcast
+  end
+  
 end
